@@ -5,6 +5,7 @@ namespace demi\backup;
 use Yii;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
+use yii\helpers\FileHelper;
 
 class Component extends \yii\base\Component
 {
@@ -50,7 +51,20 @@ class Component extends \yii\base\Component
     {
         $folder = $this->getBackupFolder();
 
-        return $this->backupFiles($folder) && $this->backupDatabase($folder);
+        $files = $this->backupFiles($folder);
+        $db = $this->backupDatabase($folder);
+
+        $archiveFile = dirname($folder) . DIRECTORY_SEPARATOR . basename($folder) . '.tar';
+
+        // Create new archive
+        $archive = new \PharData($archiveFile);
+
+        // add folder
+        $archive->buildFromDirectory($folder);
+
+        FileHelper::removeDirectory($folder);
+
+        return $archiveFile;
     }
 
     public function backupFiles($saveTo)
