@@ -1,0 +1,33 @@
+{
+    "name": "demi/backup",
+    "description": "Basic Yii2 site backup methods",
+    "keywords": [
+        "yii2",
+        "backup",
+        "dump"
+    ],
+    "homepage": "https://github.com/demisang/yii2-backup#readme",
+    "type": "yii2-extension",
+    "license": "GNU",
+    "authors": [
+        {
+            "name": "Ivan Orlov",
+            "email": "orlov_mail@mail.ru",
+            "homepage": "https://orlov.io/",
+            "role": "Creator"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/demisang/yii2-backup/issues",
+        "source": "https://github.com/demisang/yii2-backup"
+    },
+    "require": {
+        "php": ">=5.4.0",
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "demi\\backup\\basic\\": ""
+        }
+    }
+}
