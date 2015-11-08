@@ -42,9 +42,10 @@ _/backend/uploads/\*_<br />
 _Yii::$app->db_
 
 #### Result:
-2015_08_11-05_45_48.tar/images.tar<br />
-2015_08_11-05_45_48.tar/uploads.tar<br />
-2015_08_11-05_45_48.tar/sql/blog.sql.gz
+**/backups/2015_08_11-05_45\_48.tar/**<br />
+\>images.tar<br />
+\>uploads.tar<br />
+\>sql/blog.sql.gz
 
 
 ### Maximal config
