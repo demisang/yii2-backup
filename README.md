@@ -19,7 +19,7 @@ Add to composer.json in your project
 
 ### Minimal config
 
-Add to common/config/main.php:
+Configure **/common/config/main.php**:
 ```php
 'components' => [
     'backup' => [
