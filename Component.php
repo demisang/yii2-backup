@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link https://orlov.io/
+ * @copyright Copyright (c) 2016 Ivan Orlov
+ * @author Ivan Orlov <gnasimed@gmail.com>
+ */
 
 namespace demi\backup;
 
@@ -7,6 +12,11 @@ use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\helpers\FileHelper;
 
+/**
+ * Backup component
+ *
+ * @package demi\backup
+ */
 class Component extends \yii\base\Component
 {
     /** @var string Path/Alias to folder for backups storing. e.g. "@app/backups" */
@@ -15,8 +25,8 @@ class Component extends \yii\base\Component
      * if string - value will be used in date() function.
      * if callable:
      * function(\demi\backup\Component $component) {
-     *     return date("Y_m_d-H_i_s");
-     * };
+     *     return date('Y_m_d-H_i_s');
+     * }
      *
      * @var string|callable
      */
@@ -59,7 +69,7 @@ class Component extends \yii\base\Component
      * e.g.:
      * [
      *    'logs_table' => [
-     *        'db' => "logs", // database name. If not set, then will be used key "logs_table"
+     *        'db' => 'logs', // database name. If not set, then will be used key 'logs_table'
      *        'host' => 'localhost', // connection host
      *        'username' => 'root', // database username
      *        'password' => 'BXw2DKyRbz', // user password
@@ -76,7 +86,9 @@ class Component extends \yii\base\Component
     public $databases = [];
     /**
      * CLI command for creating each database backup.
+     *
      * If $databases password is empty, then will be executed: str_replace('-p\'{password}\'', '', $command);
+     * it helpful when mysql password is not set
      *
      * You can override this command with you custom params, just add them to $databases config.
      *
