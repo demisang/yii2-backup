@@ -1,6 +1,7 @@
 Yii2-backup
 ===================
-Basic Yii2 site backup methods
+Basic Yii2 site backup methods.<br />
+Also pay attention to [dropbox-backup](https://github.com/demisang/yii2-dropbox-backup).
 
 Installation
 ---
