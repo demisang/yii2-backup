@@ -58,7 +58,7 @@ class Component extends \yii\base\Component
      */
     public $directories = [];
     /**
-     * Name of DataBase component. By default Yii::$app->db.
+     * Name of Database component. By default Yii::$app->db.
      * If you do not want backup project database you can set this param as NULL/FALSE
      *
      * @var string
