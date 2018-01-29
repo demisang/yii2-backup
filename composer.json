@@ -1,18 +1,14 @@
 {
     "name": "demi/backup",
     "description": "Basic Yii2 site backup methods",
-    "keywords": [
-        "yii2",
-        "backup",
-        "dump"
-    ],
+    "keywords": ["yii2", "backup", "dump"],
     "homepage": "https://github.com/demisang/yii2-backup#readme",
     "type": "yii2-extension",
-    "license": "GNU",
+    "license": "GPL-3.0-or-later",
     "authors": [
         {
             "name": "Ivan Orlov",
-            "email": "orlov_mail@mail.ru",
+            "email": "gnasimed@gmail.com",
             "homepage": "https://orlov.io/",
             "role": "Creator"
         }

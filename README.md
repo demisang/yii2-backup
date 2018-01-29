@@ -5,14 +5,9 @@ Also pay attention to [dropbox-backup](https://github.com/demisang/yii2-dropbox-
 
 Installation
 ---
-
-Add to composer.json in your project
-```json
-{
-	"require": {
-  		"demi/backup": "~1.0"
-	}
-}
+Run
+```code
+composer require "demi/backup" "~1.0"
 ```
 
 # Configurations

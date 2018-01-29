@@ -1,8 +1,9 @@
 <?php
 /**
- * @link https://orlov.io/
- * @copyright Copyright (c) 2016 Ivan Orlov
- * @author Ivan Orlov <gnasimed@gmail.com>
+ * @copyright Copyright (c) 2018 Ivan Orlov
+ * @license   https://github.com/demisang/yii2-backup/blob/master/LICENSE
+ * @link      https://github.com/demisang/yii2-backup#readme
+ * @author    Ivan Orlov <gnasimed@gmail.com>
  */
 
 namespace demi\backup;
