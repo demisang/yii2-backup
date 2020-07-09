@@ -14,7 +14,7 @@ composer require "demi/backup" "~1.0"
 
 ### Minimal config
 
-Configure **/common/config/main.php**:
+Configure **/common/config/main.php** or console config:
 ```php
 'components' => [
     'backup' => [
@@ -74,6 +74,8 @@ _Yii::$app->db_
 // If you don't want backup project database
 // you can set this param as NULL/FALSE.
 'db' => 'db',
+// Default DB host value
+'defaultDbHost' => 'localhost',
 // List of databases connections config.
 // If you set $db param, then $databases automatically
 // will be extended with params from Yii::$app->$db.

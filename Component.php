@@ -8,6 +8,8 @@
 
 namespace demi\backup;
 
+use PharData;
+use RuntimeException;
 use Yii;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
@@ -66,6 +68,12 @@ class Component extends \yii\base\Component
      */
     public $db = 'db';
     /**
+     * Default DB hostname
+     *
+     * @var string
+     */
+    public $defaultDbHost = 'localhost';
+    /**
      * List of databases connections config.
      * e.g.:
      * [
@@ -103,15 +111,17 @@ class Component extends \yii\base\Component
      */
     public function init()
     {
+        $this->backupsFolder = rtrim(Yii::getAlias($this->backupsFolder), '\\/');
         // Check backup folder
         if (!is_dir($this->backupsFolder)) {
             throw new InvalidConfigException('Directory for backups "' . $this->backupsFolder . '" does not exists');
-        } elseif (!is_writable($this->backupsFolder)) {
+        }
+        if (!is_writable($this->backupsFolder)) {
             throw new InvalidConfigException('Directory for backups "' . $this->backupsFolder . '" is not writable');
         }
 
         // Add site database to primary databases list
-        if (!empty($this->db) && Yii::$app->has($this->db)) {
+        if ($this->db && Yii::$app->has($this->db)) {
             /** @var \yii\db\Connection $dbComponent */
             $dbComponent = Yii::$app->get($this->db);
 
@@ -119,7 +129,7 @@ class Component extends \yii\base\Component
             $dbName = $dbComponent->createCommand('select database()')->queryScalar();
             $this->databases[$dbName] = [
                 'db' => $dbName,
-                'host' => 'localhost',
+                'host' => $this->defaultDbHost,
                 'username' => $dbComponent->username,
                 'password' => addcslashes($dbComponent->password, '\''),
             ];
@@ -129,6 +139,9 @@ class Component extends \yii\base\Component
         foreach ($this->databases as $name => $params) {
             if (!isset($params['db'])) {
                 $this->databases[$name]['db'] = $name;
+            }
+            if (!isset($params['host'])) {
+                $this->databases[$name]['host'] = $this->defaultDbHost;
             }
         }
     }
@@ -143,14 +156,14 @@ class Component extends \yii\base\Component
     {
         $folder = $this->getBackupFolder();
 
-        $files = $this->backupFiles($folder);
-        $db = $this->backupDatabase($folder);
+        $this->backupFiles($folder);
+        $this->backupDatabase($folder);
 
         $resultFilename = $this->getBackupFilename();
         $archiveFile = dirname($folder) . DIRECTORY_SEPARATOR . $resultFilename . '.tar';
 
         // Create new archive
-        $archive = new \PharData($archiveFile);
+        $archive = new PharData($archiveFile);
 
         // add folder
         $archive->buildFromDirectory($folder);
@@ -183,7 +196,7 @@ class Component extends \yii\base\Component
             $archiveFile = $saveTo . DIRECTORY_SEPARATOR . $name . '.tar';
 
             // Create new archive
-            $archive = new \PharData($archiveFile);
+            $archive = new PharData($archiveFile);
 
             // add folder
             $archive->buildFromDirectory($folder, $regex);
@@ -202,7 +215,9 @@ class Component extends \yii\base\Component
     public function backupDatabase($saveTo)
     {
         $saveTo .= DIRECTORY_SEPARATOR . 'sql';
-        mkdir($saveTo);
+        if (!mkdir($saveTo) || !is_dir($saveTo)) {
+            throw new RuntimeException(sprintf('Directory "%s" was not created', $saveTo));
+        }
 
         foreach ($this->databases as $name => $params) {
             // Get mysqldump command
@@ -233,12 +248,11 @@ class Component extends \yii\base\Component
      */
     public function deleteJunk()
     {
-        if (empty($this->expireTime)) {
+        if (!$this->expireTime) {
             // Prevent deleting if expireTime is disabled
             return true;
         }
 
-        $backupsFolder = Yii::getAlias($this->backupsFolder);
         // Calculate expire date
         $expireDate = time() - $this->expireTime;
 
@@ -257,7 +271,8 @@ class Component extends \yii\base\Component
         };
 
         // Find expired backups files
-        $files = FileHelper::findFiles($backupsFolder, ['recursive' => false, 'filter' => $filter]);
+        $files = FileHelper::findFiles(Yii::getAlias($this->backupsFolder),
+            ['recursive' => false, 'filter' => $filter]);
 
         foreach ($files as $file) {
             if (@unlink($file)) {
@@ -279,9 +294,9 @@ class Component extends \yii\base\Component
     {
         if (is_callable($this->backupFilename)) {
             return call_user_func($this->backupFilename, $this);
-        } else {
-            return date($this->backupFilename);
         }
+
+        return date($this->backupFilename);
     }
 
     /**
@@ -293,16 +308,13 @@ class Component extends \yii\base\Component
      */
     public function getBackupFolder()
     {
-        // Base backups folder
-        $base = Yii::getAlias($this->backupsFolder);
-
         // Temp directory for current backup
         $current = $this->getBackupFilename();
 
-        $fullpath = $base . DIRECTORY_SEPARATOR . $current;
+        $fullpath = $this->backupsFolder . DIRECTORY_SEPARATOR . $current;
 
         // Try to create new directory
-        if (!is_dir($fullpath) && !mkdir($fullpath)) {
+        if (!mkdir($fullpath) || !is_dir($fullpath)) {
             throw new Exception('Can not create folder for backup: "' . $fullpath . '"');
         }
 
