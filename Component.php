@@ -215,8 +215,10 @@ class Component extends \yii\base\Component
     public function backupDatabase($saveTo)
     {
         $saveTo .= DIRECTORY_SEPARATOR . 'sql';
-        if (!mkdir($saveTo) || !is_dir($saveTo)) {
-            throw new RuntimeException(sprintf('Directory "%s" was not created', $saveTo));
+        if (!file_exists($saveTo)) {
+            if (!mkdir($saveTo) || !is_dir($saveTo)) {
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $saveTo));
+            }
         }
 
         foreach ($this->databases as $name => $params) {
@@ -314,8 +316,10 @@ class Component extends \yii\base\Component
         $fullpath = $this->backupsFolder . DIRECTORY_SEPARATOR . $current;
 
         // Try to create new directory
-        if (!mkdir($fullpath) || !is_dir($fullpath)) {
-            throw new Exception('Can not create folder for backup: "' . $fullpath . '"');
+        if (!file_exists($fullpath)) {
+            if (!mkdir($fullpath) || !is_dir($fullpath)) {
+                throw new Exception('Can not create folder for backup: "' . $fullpath . '"');
+            }
         }
 
         return $fullpath;
